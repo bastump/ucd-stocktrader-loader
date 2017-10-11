@@ -1,0 +1,1323 @@
+{
+            "name": "StockTrader-notification",
+            "description": "Kubernetes image: default\/notification",
+            "created": 1504039939958,
+            "componentType": "STANDARD",
+            "ignoreQualifiers": 0,
+            "importAutomatically": false,
+            "useVfs": false,
+            "active": true,
+            "deleted": false,
+            "defaultVersionType": "FULL",
+            "cleanupDaysToKeep": 0,
+            "cleanupCountToKeep": 0,
+            "componentTemplate": {
+                "securityResourceId": "69647877-8356-4334-8184-a60152c7f2a3",
+                "path": "componentTemplates\/d052d503-dc37-4ff7-8036-bf14b0cfc333",
+                "name": "Docker Template",
+                "description": "",
+                "ignoreQualifiers": 0,
+                "componentType": "STANDARD",
+                "tags": [],
+                "active": true,
+                "envPropDefs": [],
+                "resPropDefs": [],
+                "propDefs": [
+                    {
+                        "name": "docker.image.name",
+                        "label": "Docker Image Name",
+                        "pattern": "",
+                        "type": "TEXT",
+                        "required": false,
+                        "description": "Name of the Docker image to use with this component. i.e. tomcat, nginx, ubuntu",
+                        "placeholder": ""
+                    },
+                    {
+                        "name": "docker.qualified.image",
+                        "label": "Fully Qualified Docker Image",
+                        "pattern": "",
+                        "type": "TEXT",
+                        "value": "${p?:docker.registry}${p:docker.image.name}:${p:version\/dockerImageTag}",
+                        "required": true,
+                        "description": "Name to pass into pull command, in the form, [REGISTRY_HOST[:REGISTRY_PORT]\/]NAME[:TAG]",
+                        "placeholder": ""
+                    },
+                    {
+                        "name": "docker.registry",
+                        "label": "Docker Registry",
+                        "pattern": "",
+                        "type": "TEXT",
+                        "required": false,
+                        "description": "Location of the docker registry used in pull commands",
+                        "placeholder": ""
+                    },
+                    {
+                        "name": "docker.container.name",
+                        "label": "Container Name",
+                        "pattern": "",
+                        "type": "TEXT",
+                        "value": "${p:docker.image.name}-${p:environment.name}",
+                        "required": true,
+                        "description": "Name to assign to the running docker container",
+                        "placeholder": ""
+                    }
+                ],
+                "properties": [],
+                "processes": [
+                    {
+                        "name": "Deploy",
+                        "description": "",
+                        "defaultWorkingDir": "${p:resource\/work.dir}\/${p:component.name}",
+                        "takesVersion": true,
+                        "inventoryActionType": "ADD",
+                        "status": "Active",
+                        "configActionType": "ADD",
+                        "active": true,
+                        "path": "componentTemplates\/d052d503-dc37-4ff7-8036-bf14b0cfc333\/processes\/731974d9-d9d1-42a5-b9b4-52490dc8de04",
+                        "deleted": false,
+                        "propDefs": [],
+                        "rootActivity": {
+                            "edges": [
+                                {
+                                    "to": "efb4d1efddce74b0d171a47f62095d",
+                                    "from": "Run Docker Container",
+                                    "type": "SUCCESS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Remove Docker Container",
+                                    "from": "Stop Docker Container",
+                                    "type": "ALWAYS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Run Docker Container",
+                                    "from": "3415bda2aafa244d16083d9f925b31",
+                                    "type": "SUCCESS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Stop Docker Container",
+                                    "type": "ALWAYS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "3415bda2aafa244d16083d9f925b31",
+                                    "from": "Remove Docker Container",
+                                    "type": "ALWAYS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Pull Docker Image",
+                                    "type": "ALWAYS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "3415bda2aafa244d16083d9f925b31",
+                                    "from": "Pull Docker Image",
+                                    "type": "SUCCESS",
+                                    "value": ""
+                                }
+                            ],
+                            "offsets": [
+                                {
+                                    "name": "efb4d1efddce74b0d171a47f62095d",
+                                    "x": -5,
+                                    "y": 510,
+                                    "h": 50,
+                                    "w": 90
+                                },
+                                {
+                                    "name": "Run Docker Container",
+                                    "x": -75,
+                                    "y": 400,
+                                    "h": 60,
+                                    "w": 230
+                                },
+                                {
+                                    "name": "Pull Docker Image",
+                                    "x": -215,
+                                    "y": 90,
+                                    "h": 60,
+                                    "w": 210
+                                },
+                                {
+                                    "name": "3415bda2aafa244d16083d9f925b31",
+                                    "x": -10,
+                                    "y": 300,
+                                    "h": 50,
+                                    "w": 100
+                                },
+                                {
+                                    "name": "Stop Docker Container",
+                                    "x": 88.5,
+                                    "y": 90,
+                                    "h": 60,
+                                    "w": 230
+                                },
+                                {
+                                    "name": "Remove Docker Container",
+                                    "x": 78.5,
+                                    "y": 180,
+                                    "h": 60,
+                                    "w": 250
+                                }
+                            ],
+                            "layoutMode": "unknown",
+                            "type": "graph",
+                            "name": "a90a9727-6cb8-4f16-852c-d57d2e2564c0",
+                            "children": [
+                                {
+                                    "type": "finish",
+                                    "name": "efb4d1efddce74b0d171a47f62095d",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": false,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 9,
+                                    "commandName": "Pull Docker Image",
+                                    "pluginName": "Docker",
+                                    "properties": {
+                                        "image": "${p:docker.qualified.image}",
+                                        "commandOptions": "",
+                                        "globalOptions": "${p?:resource\/docker.opts}",
+                                        "envVars": ""
+                                    },
+                                    "type": "plugin",
+                                    "name": "Pull Docker Image",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": false,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 9,
+                                    "commandName": "Run Docker Container",
+                                    "pluginName": "Docker",
+                                    "properties": {
+                                        "image": "${p:docker.qualified.image}",
+                                        "containerCommand": "",
+                                        "container": "${p:docker.container.name}",
+                                        "commandOptions": "-d\n",
+                                        "globalOptions": "${p?:resource\/docker.opts}",
+                                        "envVars": ""
+                                    },
+                                    "type": "plugin",
+                                    "name": "Run Docker Container",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": false,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 9,
+                                    "commandName": "Stop Docker Container",
+                                    "pluginName": "Docker",
+                                    "properties": {
+                                        "container": "${p:docker.container.name}",
+                                        "commandOptions": "",
+                                        "globalOptions": "${p?:resource\/docker.opts}",
+                                        "envVars": ""
+                                    },
+                                    "type": "plugin",
+                                    "name": "Stop Docker Container",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": false,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 9,
+                                    "commandName": "Remove Docker Container",
+                                    "pluginName": "Docker",
+                                    "properties": {
+                                        "container": "${p:docker.container.name}",
+                                        "commandOptions": "",
+                                        "globalOptions": "${p?:resource\/docker.opts}",
+                                        "envVars": ""
+                                    },
+                                    "type": "plugin",
+                                    "name": "Remove Docker Container",
+                                    "children": []
+                                },
+                                {
+                                    "type": "join",
+                                    "name": "3415bda2aafa244d16083d9f925b31",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "Deploy-with-k8s-new",
+                        "description": "",
+                        "defaultWorkingDir": "${p:resource\/work.dir}\/${p:component.name}",
+                        "takesVersion": true,
+                        "inventoryActionType": "ADD",
+                        "status": "Active",
+                        "configActionType": "ADD",
+                        "active": true,
+                        "path": "componentTemplates\/d052d503-dc37-4ff7-8036-bf14b0cfc333\/processes\/0669d32f-85ae-4a40-b067-93a59baccb84",
+                        "deleted": false,
+                        "propDefs": [],
+                        "rootActivity": {
+                            "edges": [
+                                {
+                                    "to": "3415bda2aafa244d16083d9f925b31",
+                                    "from": "Remove Docker Container",
+                                    "type": "ALWAYS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Set labels ports and image name",
+                                    "from": "Download Artifacts",
+                                    "type": "SUCCESS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "efb4d1efddce74b0d171a47f62095d",
+                                    "from": "Run Docker Container on ICS",
+                                    "type": "SUCCESS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Stop and Delete Existing Services and Deployments",
+                                    "from": "Set labels ports and image name",
+                                    "type": "SUCCESS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Create Servcies and Deployments",
+                                    "from": "Stop and Delete Existing Services and Deployments",
+                                    "type": "ALWAYS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Login to Cloud Foundry",
+                                    "from": "Container Manager",
+                                    "type": "VALUE",
+                                    "value": "ICS"
+                                },
+                                {
+                                    "to": "efb4d1efddce74b0d171a47f62095d",
+                                    "from": "Create Servcies and Deployments",
+                                    "type": "SUCCESS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "efb4d1efddce74b0d171a47f62095d",
+                                    "from": "Run Docker Container",
+                                    "type": "SUCCESS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Set docker.opts on Agent Resource",
+                                    "from": "Init",
+                                    "type": "SUCCESS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Run Docker Container on ICS",
+                                    "from": "Remove Docker Container from ICS",
+                                    "type": "ALWAYS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Remove Docker Container",
+                                    "from": "Stop Docker Container",
+                                    "type": "ALWAYS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Remove Docker Container from ICS",
+                                    "from": "Stop Docker Container on ICS",
+                                    "type": "ALWAYS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Init",
+                                    "from": "Login to Cloud Foundry",
+                                    "type": "SUCCESS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Run Docker Container",
+                                    "from": "3415bda2aafa244d16083d9f925b31",
+                                    "type": "SUCCESS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Download Artifacts",
+                                    "from": "Container Manager",
+                                    "type": "VALUE",
+                                    "value": "Kubernetes"
+                                },
+                                {
+                                    "to": "Stop Docker Container",
+                                    "from": "Container Manager",
+                                    "type": "VALUE",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Pull Docker Image",
+                                    "from": "Container Manager",
+                                    "type": "VALUE",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Container Manager",
+                                    "type": "ALWAYS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Stop Docker Container on ICS",
+                                    "from": "Set docker.opts on Agent Resource",
+                                    "type": "SUCCESS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "3415bda2aafa244d16083d9f925b31",
+                                    "from": "Pull Docker Image",
+                                    "type": "SUCCESS",
+                                    "value": ""
+                                }
+                            ],
+                            "offsets": [
+                                {
+                                    "name": "Create Servcies and Deployments",
+                                    "x": 411.5,
+                                    "y": 760,
+                                    "h": 80,
+                                    "w": 370
+                                },
+                                {
+                                    "name": "Init",
+                                    "x": -33.499999999999886,
+                                    "y": 460,
+                                    "h": 80,
+                                    "w": 260
+                                },
+                                {
+                                    "name": "Set docker.opts on Agent Resource",
+                                    "x": -103.49999999999989,
+                                    "y": 590,
+                                    "h": 80,
+                                    "w": 380
+                                },
+                                {
+                                    "name": "3415bda2aafa244d16083d9f925b31",
+                                    "x": -693.5,
+                                    "y": 560,
+                                    "h": 60,
+                                    "w": 130
+                                },
+                                {
+                                    "name": "Login to Cloud Foundry",
+                                    "x": -58.499999999999886,
+                                    "y": 340,
+                                    "h": 80,
+                                    "w": 330
+                                },
+                                {
+                                    "name": "Stop and Delete Existing Services and Deployments",
+                                    "x": 396.49999999999955,
+                                    "y": 600,
+                                    "h": 80,
+                                    "w": 510
+                                },
+                                {
+                                    "name": "Download Artifacts",
+                                    "x": 416.5,
+                                    "y": 329.99999999999994,
+                                    "h": 80,
+                                    "w": 300
+                                },
+                                {
+                                    "name": "Stop Docker Container",
+                                    "x": -548.4999999999999,
+                                    "y": 290,
+                                    "h": 80,
+                                    "w": 330
+                                },
+                                {
+                                    "name": "Run Docker Container on ICS",
+                                    "x": -93.49999999999989,
+                                    "y": 970,
+                                    "h": 80,
+                                    "w": 340
+                                },
+                                {
+                                    "name": "Pull Docker Image",
+                                    "x": -873.5,
+                                    "y": 290,
+                                    "h": 80,
+                                    "w": 290
+                                },
+                                {
+                                    "name": "Remove Docker Container from ICS",
+                                    "x": -103.49999999999989,
+                                    "y": 829.9999999999999,
+                                    "h": 80,
+                                    "w": 390
+                                },
+                                {
+                                    "name": "Run Docker Container",
+                                    "x": -573.5,
+                                    "y": 700,
+                                    "h": 80,
+                                    "w": 320
+                                },
+                                {
+                                    "name": "efb4d1efddce74b0d171a47f62095d",
+                                    "x": -5.000000000000114,
+                                    "y": 1225,
+                                    "h": 90,
+                                    "w": 130
+                                },
+                                {
+                                    "name": "Set labels ports and image name",
+                                    "x": 416.5,
+                                    "y": 460,
+                                    "h": 80,
+                                    "w": 360
+                                },
+                                {
+                                    "name": "Container Manager",
+                                    "x": -110.00000000000011,
+                                    "y": 140,
+                                    "h": 80,
+                                    "w": 460
+                                },
+                                {
+                                    "name": "Remove Docker Container",
+                                    "x": -543.5,
+                                    "y": 409.99999999999994,
+                                    "h": 80,
+                                    "w": 360
+                                },
+                                {
+                                    "name": "Stop Docker Container on ICS",
+                                    "x": -73.5,
+                                    "y": 700,
+                                    "h": 80,
+                                    "w": 340
+                                }
+                            ],
+                            "layoutMode": "manual",
+                            "type": "graph",
+                            "name": "2c6dbadf-bc9d-4d25-a477-ec485cd8612e",
+                            "children": [
+                                {
+                                    "type": "finish",
+                                    "name": "efb4d1efddce74b0d171a47f62095d",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": false,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 9,
+                                    "commandName": "Pull Docker Image",
+                                    "pluginName": "Docker",
+                                    "properties": {
+                                        "image": "${p:docker.qualified.image}",
+                                        "commandOptions": "",
+                                        "globalOptions": "${p?:resource\/docker.opts}",
+                                        "envVars": ""
+                                    },
+                                    "type": "plugin",
+                                    "name": "Pull Docker Image",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": false,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 9,
+                                    "commandName": "Run Docker Container",
+                                    "pluginName": "Docker",
+                                    "properties": {
+                                        "image": "${p:docker.qualified.image}",
+                                        "containerCommand": "",
+                                        "container": "${p:docker.container.name}",
+                                        "commandOptions": "-dit -p 3306:3306",
+                                        "globalOptions": "${p?:resource\/docker.opts}",
+                                        "envVars": ""
+                                    },
+                                    "type": "plugin",
+                                    "name": "Run Docker Container",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": false,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 9,
+                                    "commandName": "Stop Docker Container",
+                                    "pluginName": "Docker",
+                                    "properties": {
+                                        "container": "${p:docker.container.name}",
+                                        "commandOptions": "",
+                                        "globalOptions": "${p?:resource\/docker.opts}",
+                                        "envVars": ""
+                                    },
+                                    "type": "plugin",
+                                    "name": "Stop Docker Container",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": false,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 9,
+                                    "commandName": "Remove Docker Container",
+                                    "pluginName": "Docker",
+                                    "properties": {
+                                        "container": "${p:docker.container.name}",
+                                        "commandOptions": "",
+                                        "globalOptions": "${p?:resource\/docker.opts}",
+                                        "envVars": ""
+                                    },
+                                    "type": "plugin",
+                                    "name": "Remove Docker Container",
+                                    "children": []
+                                },
+                                {
+                                    "type": "join",
+                                    "name": "3415bda2aafa244d16083d9f925b31",
+                                    "children": []
+                                },
+                                {
+                                    "propertyName": "${p:environment\/ContainerManager}",
+                                    "type": "switch",
+                                    "name": "Container Manager",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": false,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 3,
+                                    "commandName": "Login to Cloud Foundry",
+                                    "pluginName": "Cloud Foundry IBM Containers",
+                                    "properties": {
+                                        "commandPath": "${p?:resource\/cfic.commandPath}",
+                                        "user": "${p:application\/bmx.user}",
+                                        "password": "crypt_v1{AES\/CBC\/PKCS5Padding|aes128keycu8c|76WxOjCMxvFxEKInx63NVQ==|SKdYDwpRUd16LWGmWFEQabpDWJl\/6v3EOcYUPtP2BHQ=}",
+                                        "api": "https:\/\/${p:application\/bmx.api}",
+                                        "org": "${p:application\/bmx.org}",
+                                        "space": "${p:application\/bmx.space}"
+                                    },
+                                    "type": "plugin",
+                                    "name": "Login to Cloud Foundry",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": false,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 3,
+                                    "commandName": "Initialize Plugin",
+                                    "pluginName": "Cloud Foundry IBM Containers",
+                                    "properties": {"commandPath": "${p?:resource\/cfic.commandPath}"},
+                                    "type": "plugin",
+                                    "name": "Init",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": false,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 72,
+                                    "commandName": "Set Resource Property",
+                                    "pluginName": "IBM UrbanCode Deploy Resources",
+                                    "properties": {
+                                        "resource": "${p:resource.parent.path}",
+                                        "name": "docker.opts",
+                                        "value": "-H=${p:Init\/cfic.dockerHost} --tlsverify --tlscacert=${p:Init\/cfic.dockerCertPath}\/ca.pem --tlscert=${p:Init\/cfic.dockerCertPath}\/cert.pem --tlskey=${p:Init\/cfic.dockerCertPath}\/key.pem",
+                                        "isSecure": "false"
+                                    },
+                                    "type": "plugin",
+                                    "name": "Set docker.opts on Agent Resource",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": false,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 9,
+                                    "commandName": "Stop Docker Container",
+                                    "pluginName": "Docker",
+                                    "properties": {
+                                        "container": "${p:docker.container.name}",
+                                        "commandOptions": "",
+                                        "globalOptions": "${p?:resource\/docker.opts}",
+                                        "envVars": ""
+                                    },
+                                    "type": "plugin",
+                                    "name": "Stop Docker Container on ICS",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": false,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 9,
+                                    "commandName": "Remove Docker Container",
+                                    "pluginName": "Docker",
+                                    "properties": {
+                                        "container": "${p:docker.container.name}",
+                                        "commandOptions": "",
+                                        "globalOptions": "${p?:resource\/docker.opts}",
+                                        "envVars": ""
+                                    },
+                                    "type": "plugin",
+                                    "name": "Remove Docker Container from ICS",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": false,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 9,
+                                    "commandName": "Run Docker Container",
+                                    "pluginName": "Docker",
+                                    "properties": {
+                                        "image": "${p:application\/ics.registry}\/${p:application\/ics.namespace}\/${p:resource.name}:${p:version.name}",
+                                        "containerCommand": "",
+                                        "container": "${p:docker.container.name}",
+                                        "commandOptions": "-d -p ${p:service.port}:${p:service.port}\n",
+                                        "globalOptions": "${p?:resource\/docker.opts}",
+                                        "envVars": ""
+                                    },
+                                    "type": "plugin",
+                                    "name": "Run Docker Container on ICS",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": true,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 11,
+                                    "commandName": "Delete Resources",
+                                    "pluginName": "Kubernetes",
+                                    "properties": {
+                                        "url": "",
+                                        "username": "",
+                                        "password": "crypt_v1{AES\/CBC\/PKCS5Padding|aes128keycu8c|BtX2Ydezml0FWnh7JGn2SA==|83+ZpHAIa0tkbHPdM4uK4A==}",
+                                        "namespace": "",
+                                        "path": "\/usr\/local\/bin\/kubectl",
+                                        "globals": "--kubeconfig \/home\/ibmadmin\/.kube\/config",
+                                        "flags": "",
+                                        "type": "filename",
+                                        "resources": "${p:jkeName}.yaml"
+                                    },
+                                    "type": "plugin",
+                                    "name": "Stop and Delete Existing Services and Deployments",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": true,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 11,
+                                    "commandName": "Create Resources",
+                                    "pluginName": "Kubernetes",
+                                    "properties": {
+                                        "url": "",
+                                        "username": "",
+                                        "password": "crypt_v1{AES\/CBC\/PKCS5Padding|aes128keycu8c|7yjwKY2pXpHDKvI+X3mgOg==|UKIVaWfdBtnNULWAnVVV8A==}",
+                                        "namespace": "",
+                                        "path": "\/usr\/local\/bin\/kubectl",
+                                        "globals": "--kubeconfig \/home\/ibmadmin\/.kube\/config",
+                                        "flags": "",
+                                        "filename": "${p:jkeName}.yaml"
+                                    },
+                                    "type": "plugin",
+                                    "name": "Create Servcies and Deployments",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": false,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 61,
+                                    "commandName": "Replace Tokens",
+                                    "pluginName": "File Utils",
+                                    "properties": {
+                                        "includes": "${p:jkeName}.yaml",
+                                        "excludes": "",
+                                        "envPropValues": "${p:environment\/allProperties},${p:component\/allProperties},${p:application\/allProperties}",
+                                        "propertyPrefix": "",
+                                        "explicitTokens": "",
+                                        "startDelimiter": "@",
+                                        "endDelimiter": "@",
+                                        "propFile": "replace_tokens.properties",
+                                        "dir": "",
+                                        "customEncoding": ""
+                                    },
+                                    "type": "plugin",
+                                    "name": "Set labels ports and image name",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": false,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 28,
+                                    "commandName": "Download Artifacts",
+                                    "pluginName": "IBM UrbanCode Deploy Versioned File Storage",
+                                    "properties": {
+                                        "directoryOffset": ".",
+                                        "artifactSetBaseDir": "",
+                                        "fileIncludePatterns": "${p:jkeName}.yaml",
+                                        "fileExcludePatterns": "",
+                                        "syncMode": "true",
+                                        "fullVerification": "true",
+                                        "setFileExecuteBits": "false",
+                                        "verifyFileIntegrity": "false",
+                                        "versionId": "${p:version.id}",
+                                        "serverUrl": "${p:server.url}",
+                                        "compId": "${p:component.id}",
+                                        "resId": "${p:resource.id}",
+                                        "charset": "",
+                                        "label": ""
+                                    },
+                                    "type": "plugin",
+                                    "name": "Download Artifacts",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "Uninstall",
+                        "description": "",
+                        "defaultWorkingDir": "${p:resource\/work.dir}\/${p:component.name}",
+                        "takesVersion": true,
+                        "inventoryActionType": "REMOVE",
+                        "status": "Active",
+                        "active": true,
+                        "path": "componentTemplates\/d052d503-dc37-4ff7-8036-bf14b0cfc333\/processes\/3edb3873-903a-45fd-b5fc-a82cbdbab750",
+                        "deleted": false,
+                        "propDefs": [],
+                        "rootActivity": {
+                            "edges": [
+                                {
+                                    "to": "Set docker.opts on Agent Resource",
+                                    "from": "Init",
+                                    "type": "SUCCESS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Stop Docker Container",
+                                    "from": "Container Manager",
+                                    "type": "VALUE",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Remove Docker Container",
+                                    "from": "Stop Docker Container",
+                                    "type": "ALWAYS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "efb4d1efddce74b0d171a47f62095d",
+                                    "from": "Remove Docker Container",
+                                    "type": "SUCCESS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Init",
+                                    "from": "Login to Cloud Foundry",
+                                    "type": "SUCCESS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Delete Existing Services and Deployments",
+                                    "from": "Container Manager",
+                                    "type": "VALUE",
+                                    "value": "Kubernetes"
+                                },
+                                {
+                                    "to": "Container Manager",
+                                    "type": "ALWAYS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "efb4d1efddce74b0d171a47f62095d",
+                                    "from": "Delete Existing Services and Deployments",
+                                    "type": "SUCCESS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Stop Docker Container on ICS",
+                                    "from": "Set docker.opts on Agent Resource",
+                                    "type": "SUCCESS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Login to Cloud Foundry",
+                                    "from": "Container Manager",
+                                    "type": "VALUE",
+                                    "value": "ICS"
+                                },
+                                {
+                                    "to": "efb4d1efddce74b0d171a47f62095d",
+                                    "from": "Remove Docker Container from ICS",
+                                    "type": "SUCCESS",
+                                    "value": ""
+                                },
+                                {
+                                    "to": "Remove Docker Container from ICS",
+                                    "from": "Stop Docker Container on ICS",
+                                    "type": "ALWAYS",
+                                    "value": ""
+                                }
+                            ],
+                            "offsets": [
+                                {
+                                    "name": "Remove Docker Container from ICS",
+                                    "x": -105.00000000000006,
+                                    "y": 870.0000000000001,
+                                    "h": 80,
+                                    "w": 390
+                                },
+                                {
+                                    "name": "Delete Existing Services and Deployments",
+                                    "x": 499.9999999999999,
+                                    "y": 420,
+                                    "h": 80,
+                                    "w": 440
+                                },
+                                {
+                                    "name": "Stop Docker Container",
+                                    "x": -600.0000000000001,
+                                    "y": 400,
+                                    "h": 80,
+                                    "w": 330
+                                },
+                                {
+                                    "name": "Remove Docker Container",
+                                    "x": -610.0000000000001,
+                                    "y": 560,
+                                    "h": 80,
+                                    "w": 360
+                                },
+                                {
+                                    "name": "efb4d1efddce74b0d171a47f62095d",
+                                    "x": 9.999999999999773,
+                                    "y": 1130,
+                                    "h": 90,
+                                    "w": 130
+                                },
+                                {
+                                    "name": "Login to Cloud Foundry",
+                                    "x": -40.000000000000114,
+                                    "y": 343.9393939393938,
+                                    "h": 80,
+                                    "w": 330
+                                },
+                                {
+                                    "name": "Container Manager",
+                                    "x": -170.00000000000006,
+                                    "y": 130,
+                                    "h": 80,
+                                    "w": 460
+                                },
+                                {
+                                    "name": "Set docker.opts on Agent Resource",
+                                    "x": -65.00000000000011,
+                                    "y": 610,
+                                    "h": 80,
+                                    "w": 380
+                                },
+                                {
+                                    "name": "Stop Docker Container on ICS",
+                                    "x": -80,
+                                    "y": 720,
+                                    "h": 80,
+                                    "w": 340
+                                },
+                                {
+                                    "name": "Init",
+                                    "x": -10.000000000000114,
+                                    "y": 470,
+                                    "h": 80,
+                                    "w": 260
+                                }
+                            ],
+                            "layoutMode": "manual",
+                            "type": "graph",
+                            "name": "655db19a-02ed-4287-babd-be65d8f9460a",
+                            "children": [
+                                {
+                                    "type": "finish",
+                                    "name": "efb4d1efddce74b0d171a47f62095d",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": false,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 9,
+                                    "commandName": "Stop Docker Container",
+                                    "pluginName": "Docker",
+                                    "properties": {
+                                        "container": "${p:docker.container.name}",
+                                        "commandOptions": "",
+                                        "globalOptions": "${p?:resource\/docker.opts}",
+                                        "envVars": ""
+                                    },
+                                    "type": "plugin",
+                                    "name": "Stop Docker Container",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": false,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 9,
+                                    "commandName": "Remove Docker Container",
+                                    "pluginName": "Docker",
+                                    "properties": {
+                                        "container": "${p:docker.container.name}",
+                                        "commandOptions": "",
+                                        "globalOptions": "${p?:resource\/docker.opts}",
+                                        "envVars": ""
+                                    },
+                                    "type": "plugin",
+                                    "name": "Remove Docker Container",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": false,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 3,
+                                    "commandName": "Login to Cloud Foundry",
+                                    "pluginName": "Cloud Foundry IBM Containers",
+                                    "properties": {
+                                        "commandPath": "${p?:resource\/cfic.commandPath}",
+                                        "user": "${p?:resource\/cfic.user}",
+                                        "password": "crypt_v1{AES\/CBC\/PKCS5Padding|aes128keycu8c|DnozO3rxcdl595ec3Fgi1Q==|1i9yzuK8h0keNMMdB1R\/4p1dqM3OEZ8dRhiHxN\/OkPQ=}",
+                                        "api": "https:\/\/api.ng.bluemix.net",
+                                        "org": "${p?:resource\/cfic.org}",
+                                        "space": "${p?:resource\/cfic.space}"
+                                    },
+                                    "type": "plugin",
+                                    "name": "Login to Cloud Foundry",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": false,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 3,
+                                    "commandName": "Initialize Plugin",
+                                    "pluginName": "Cloud Foundry IBM Containers",
+                                    "properties": {"commandPath": "${p?:resource\/cfic.commandPath}"},
+                                    "type": "plugin",
+                                    "name": "Init",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": false,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 72,
+                                    "commandName": "Set Resource Property",
+                                    "pluginName": "IBM UrbanCode Deploy Resources",
+                                    "properties": {
+                                        "resource": "${p:resource.parent.path}",
+                                        "name": "docker.opts",
+                                        "value": "-H=${p:Init\/cfic.dockerHost} --tlsverify --tlscacert=${p:Init\/cfic.dockerCertPath}\/ca.pem --tlscert=${p:Init\/cfic.dockerCertPath}\/cert.pem --tlskey=${p:Init\/cfic.dockerCertPath}\/key.pem",
+                                        "isSecure": "false"
+                                    },
+                                    "type": "plugin",
+                                    "name": "Set docker.opts on Agent Resource",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": false,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 9,
+                                    "commandName": "Stop Docker Container",
+                                    "pluginName": "Docker",
+                                    "properties": {
+                                        "container": "${p:docker.container.name}",
+                                        "commandOptions": "",
+                                        "globalOptions": "${p?:resource\/docker.opts}",
+                                        "envVars": ""
+                                    },
+                                    "type": "plugin",
+                                    "name": "Stop Docker Container on ICS",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": false,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 9,
+                                    "commandName": "Remove Docker Container",
+                                    "pluginName": "Docker",
+                                    "properties": {
+                                        "container": "${p:docker.container.name}",
+                                        "commandOptions": "",
+                                        "globalOptions": "${p?:resource\/docker.opts}",
+                                        "envVars": ""
+                                    },
+                                    "type": "plugin",
+                                    "name": "Remove Docker Container from ICS",
+                                    "children": []
+                                },
+                                {
+                                    "propertyName": "${p:environment\/ContainerManager}",
+                                    "type": "switch",
+                                    "name": "Container Manager",
+                                    "children": []
+                                },
+                                {
+                                    "allowFailure": false,
+                                    "useImpersonation": false,
+                                    "showHidden": true,
+                                    "impersonationUseSudo": false,
+                                    "pluginVersion": 11,
+                                    "commandName": "Delete Resources",
+                                    "pluginName": "Kubernetes",
+                                    "properties": {
+                                        "url": "",
+                                        "username": "",
+                                        "password": "crypt_v1{AES\/CBC\/PKCS5Padding|aes128keycu8c|dEY3t3M+wmOM7XeRbjdQtA==|+Z7R1XVJ2sREzEiwEBouCA==}",
+                                        "namespace": "",
+                                        "path": "\/usr\/local\/bin\/kubectl",
+                                        "globals": "--kubeconfig \/home\/ibmadmin\/.kube\/config",
+                                        "flags": "",
+                                        "type": "labels",
+                                        "resources": "deployment,service app=${p:docker.container.name}"
+                                    },
+                                    "type": "plugin",
+                                    "name": "Delete Existing Services and Deployments",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "Update Inventory",
+                        "description": "Empty process to help acquire component versions during a docker-compose up deployment.",
+                        "defaultWorkingDir": "${p:resource\/work.dir}\/${p:component.name}",
+                        "takesVersion": true,
+                        "inventoryActionType": "ADD",
+                        "status": "Active",
+                        "configActionType": "ADD",
+                        "active": true,
+                        "path": "componentTemplates\/d052d503-dc37-4ff7-8036-bf14b0cfc333\/processes\/82c9da4c-bbf0-4f48-a3d4-48d202090633",
+                        "deleted": false,
+                        "propDefs": [],
+                        "rootActivity": {
+                            "edges": [{
+                                "to": "52ab313f7bd1d841136630fa150808",
+                                "type": "ALWAYS",
+                                "value": ""
+                            }],
+                            "offsets": [{
+                                "name": "52ab313f7bd1d841136630fa150808",
+                                "x": -5,
+                                "y": 420,
+                                "h": 80,
+                                "w": 120
+                            }],
+                            "layoutMode": "unknown",
+                            "type": "graph",
+                            "name": "12d98b3d-7a90-40dc-a671-f514de85c1b5",
+                            "children": [{
+                                "type": "finish",
+                                "name": "52ab313f7bd1d841136630fa150808",
+                                "children": []
+                            }]
+                        }
+                    }
+                ],
+                "genericProcesses": [],
+                "teamMappings": []
+            },
+            "sourceConfigPluginName": "Docker",
+            "envPropDefs": [],
+            "resPropDefs": [],
+            "versionPropDefs": [
+                {
+                    "name": "dockerImageTag",
+                    "label": "dockerImageTag",
+                    "pattern": "",
+                    "type": "TEXT",
+                    "required": false,
+                    "description": "",
+                    "placeholder": ""
+                },
+                {
+                    "name": "registry",
+                    "label": "registry",
+                    "pattern": "",
+                    "type": "TEXT",
+                    "required": false,
+                    "description": "",
+                    "placeholder": ""
+                }
+            ],
+            "propSheetGroup": {"propSheets": [
+                {
+                    "name": "custom",
+                    "properties": [{
+                        "name": "docker.registry.name",
+                        "value": "master.cfc:8500",
+                        "description": "",
+                        "secure": false
+                    }]
+                },
+                {
+                    "name": "DockerTagImport",
+                    "properties": [
+                        {
+                            "name": "allowInsecure",
+                            "value": "false",
+                            "description": "",
+                            "secure": false
+                        },
+                        {
+                            "name": "api",
+                            "description": "",
+                            "secure": false
+                        },
+                        {
+                            "name": "awsCli",
+                            "description": "",
+                            "secure": false
+                        },
+                        {
+                            "name": "CF_HOME",
+                            "description": "",
+                            "secure": false
+                        },
+                        {
+                            "name": "dockerImageName",
+                            "value": "default\/notification",
+                            "description": "",
+                            "secure": false
+                        },
+                        {
+                            "name": "dockerRegistryName",
+                            "value": "master.cfc:8500",
+                            "description": "",
+                            "secure": false
+                        },
+                        {
+                            "name": "dockerRegistryPassword",
+                            "value": "crypt_v1{AES\/CBC\/PKCS5Padding|aes128keycu8c|lxLW2zt0CaLfSDCHfLmHGQ==|bHsLaip0\/o19kg4DN91sRk8WH5HfOWPQiA4i0aEv31Q=}",
+                            "description": "",
+                            "secure": true
+                        },
+                        {
+                            "name": "dockerRegistryUsername",
+                            "value": "${p?:dockerUsername}",
+                            "description": "",
+                            "secure": false
+                        },
+                        {
+                            "name": "namingConvention",
+                            "value": "tag_only",
+                            "description": "",
+                            "secure": false
+                        },
+                        {
+                            "name": "org",
+                            "description": "",
+                            "secure": false
+                        },
+                        {
+                            "name": "region",
+                            "description": "",
+                            "secure": false
+                        },
+                        {
+                            "name": "registryType",
+                            "value": "false",
+                            "description": "",
+                            "secure": false
+                        },
+                        {
+                            "name": "space",
+                            "description": "",
+                            "secure": false
+                        }
+                    ]
+                },
+                {
+                    "name": "template",
+                    "properties": [
+                        {
+                            "name": "docker.container.name",
+                            "value": "${p:docker.image.name}-${p:environment.name}",
+                            "description": "",
+                            "secure": false
+                        },
+                        {
+                            "name": "docker.image.name",
+                            "value": "default\/notification",
+                            "description": "",
+                            "secure": false
+                        },
+                        {
+                            "name": "docker.qualified.image",
+                            "value": "${p?:docker.registry}${p:docker.image.name}:${p:version\/dockerImageTag}",
+                            "description": "",
+                            "secure": false
+                        },
+                        {
+                            "name": "docker.registry",
+                            "description": "",
+                            "secure": false
+                        }
+                    ]
+                }
+            ]},
+            "processes": [],
+            "configTemplates": [],
+            "genericProcesses": [],
+            "teamMappings": [],
+            "tags": [{
+                "id": "7a647b1b-5103-448a-8e6a-9de0490f353b",
+                "name": "kubernetes.image",
+                "color": "#FFFFFF",
+                "description": "",
+                "objectType": "Component"
+            }]
+        }

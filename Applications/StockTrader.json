@@ -1,0 +1,6 @@
+{
+  "name": "StockTrader",
+  "description": "",
+  "notificationScheme": "Default Notification Scheme",
+  "enforceCompleteSnapshots": "false"
+}

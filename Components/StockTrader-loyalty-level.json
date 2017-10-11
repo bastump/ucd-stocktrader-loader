@@ -1,0 +1,17 @@
+{
+    "name": "StockTrader-loyalty-level",
+    "description": "",
+    "componentType": "STANDARD",
+    "ignoreQualifiers": 0,
+    "importAutomatically": false,
+    "useVfs": true,
+    "active": true,
+    "deleted": false,
+    "defaultVersionType": "FULL",
+    "cleanupDaysToKeep": 0,
+    "cleanupCountToKeep": 0,
+    "templateName": "Docker Template",
+    "envPropDefs": [],
+    "resPropDefs": [],
+    "versionPropDefs": []
+}
