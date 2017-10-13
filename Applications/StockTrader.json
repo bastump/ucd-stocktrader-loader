@@ -1,5 +1,6 @@
 {
   "name": "StockTrader",
+  "templateName": "Kubernetes Application Template",
   "description": "",
   "notificationScheme": "Default Notification Scheme",
   "enforceCompleteSnapshots": "false"

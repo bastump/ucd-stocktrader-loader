@@ -11,96 +11,43 @@ then
 fi
 
 
+echo loading plugins
+echo
 
-curl -k —verbose -u $DS_USERNAME:$DS_PASSWORD -s --insecure -F "file=@$JKE_LOCATION/plugins/WebSphereLiberty-7.778014.zip;type=application/zip" -F "filename=WebSph
-ereLiberty-7.778014.zip" $DS_WEB_URL/rest/plugin/automationPlugin
+curl -k —verbose -u $DS_USERNAME:$DS_PASSWORD -s --insecure -F "file=@$STOCKTRADER_LOCATION/plugins/kubernetes-11.935934.zip;type=application/zip" -F "filename=kubernetes-11.935934.zip" $DS_WEB_URL/rest/plugin/automationPlugin
+curl -k —verbose -u $DS_USERNAME:$DS_PASSWORD -s --insecure -F "file=@$STOCKTRADER_LOCATION/plugins/docker-plugin-9.927770.zip;type=application/zip" -F "filename=docker-plugin-9.927770.zip" $DS_WEB_URL/rest/plugin/automationPlugin
+curl -k —verbose -u $DS_USERNAME:$DS_PASSWORD -s --insecure -F "file=@$STOCKTRADER_LOCATION/plugins/DockerSourceConfig-22.937762.zip;type=application/zip" -F "filename=DockerSourceConfig-22.937762.zip" $DS_WEB_URL/rest/plugin/sourceConfigPlugin
 
+echo
+echo
+echo creating tmp directory
+echo
 
-echo creating kubernetes component template
-echo 
+mkdir $STOCKTRADER_LOCATION/tmp
 
-kubernetesTemplateId=`$udclient createComponentTemplate $STOCKTRADER_LOCATION/ComponentTemplates/Kubernetes+Component+Template.json | python -c \
-"import json; import sys;
-data=json.load(sys.stdin); print data['id']"`
+echo downloading templates from github
+echo
 
-echo creating docker template
-echo 
+curl -k https://raw.githubusercontent.com/IBM-UrbanCode/Templates-UCD/master/Kubernetes/Tutorial/KubernetesComponentTemplate.json > $STOCKTRADER_LOCATION/tmp/KubernetesComponentTemplate.json
+curl -k https://raw.githubusercontent.com/IBM-UrbanCode/Templates-UCD/master/Docker/componenttemplates/Docker%2BTemplate.json > $STOCKTRADER_LOCATION/tmp/Docker+Template.json
+curl -k https://raw.githubusercontent.com/IBM-UrbanCode/Templates-UCD/master/Kubernetes/Tutorial/KubernetesApplicationTemplate.json > $STOCKTRADER_LOCATION/tmp/KubernetesApplicationTemplate.json
 
-dockerTemplateId=`$udclient createComponentTemplate $STOCKTRADER_LOCATION/ComponentTemplates/Docker+Template.json | python -c \
-"import json; import sys;
-data=json.load(sys.stdin); print data['id']"`
+echo
+echo importing templates
+echo
 
-echo setting component prop refs
-
-curl -k -u $DS_USERNAME:$DS_PASSWORD \
-     -H 'Content-Type: application/json' \
-     -X PUT \
-     -d "
-  {
-    \"description\": \"Name of the Docker image to use with this component. i.e. tomcat, nginx, ubuntu\",
-    \"label\": \"Docker Image Name\",
-    \"name\": \"docker.image.name\",
-    \"pattern\": \"\",
-    \"required\": \"false\",
-    \"type\": \"TEXT\",
-    \"value\": \"\"
-  }
-" \
-""$DS_WEB_URL"/property/propSheetDef/componentTemplates&"$dockerTemplateId"&propSheetDef.-1/propDefs" 1>/dev/null
-
-curl -k -u $DS_USERNAME:$DS_PASSWORD \
-     -H 'Content-Type: application/json' \
-     -X PUT \
-     -d "
-  {
-    \"description\": \"Name to pass into pull command, in the form, [REGISTRY_HOST[:REGISTRY_PORT]\/]NAME[:TAG]\",
-    \"label\": \"Fully Qualified Docker Image\",
-    \"name\": \"docker.qualified.image\",
-    \"pattern\": \"\",
-    \"required\": \"true\",
-    \"type\": \"TEXT\",
-    \"value\": \"\${p?:docker.registry}\${p:docker.image.name}:\${p:version/dockerImageTag}\"
-  }
-" \
-""$DS_WEB_URL"/property/propSheetDef/componentTemplates&"$dockerTemplateId"&propSheetDef.-1/propDefs" 1>/dev/null
-
-curl -k -u $DS_USERNAME:$DS_PASSWORD \
-     -H 'Content-Type: application/json' \
-     -X PUT \
-     -d "
-  {
-    \"description\": \"Location of the docker registry used in pull commands\",
-    \"label\": \"Docker Registry\",
-    \"name\": \"docker.registry\",
-    \"pattern\": \"\",
-    \"required\": \"false\",
-    \"type\": \"TEXT\",
-    \"value\": \"\"
-  }
-" \
-""$DS_WEB_URL"/property/propSheetDef/componentTemplates&"$dockerTemplateId"&propSheetDef.-1/propDefs" 1>/dev/null
-
-curl -k -u $DS_USERNAME:$DS_PASSWORD \
-     -H 'Content-Type: application/json' \
-     -X PUT \
-     -d "
-  {
-    \"description\": \"Name to assign to the running docker container\",
-    \"label\": \"Container Name\",
-    \"name\": \"docker.container.name\",
-    \"pattern\": \"\",
-    \"required\": \"false\",
-    \"type\": \"TEXT\",
-    \"value\": \"\${p:docker.image.name}-\${p:environment.name}\"
-  }
-" \
-""$DS_WEB_URL"/property/propSheetDef/componentTemplates&"$dockerTemplateId"&propSheetDef.-1/propDefs" 1>/dev/null
-
+curl -k —verbose -u $DS_USERNAME:$DS_PASSWORD -s --insecure -F "file=@$STOCKTRADER_LOCATION/tmp/Docker+Template.json;type=application/zip" -F "filename=Docker+Template.json" $DS_WEB_URL/rest/deploy/componentTemplate/import 1> /dev/null
+curl -k —verbose -u $DS_USERNAME:$DS_PASSWORD -s --insecure -F "file=@$STOCKTRADER_LOCATION/tmp/KubernetesApplicationTemplate.json;type=application/zip" -F "filename=KubernetesApplicationTemplate.json" $DS_WEB_URL/rest/deploy/applicationTemplate/import?resourceTemplateUpgradeType=UPGRADE_IF_EXISTS 1> /dev/null
 
 echo creating team
 echo
 
 $udclient createTeam -team "Container Team" 1> /dev/null
+
+echo creating components
+echo 
+
+curl -k —verbose -u $DS_USERNAME:$DS_PASSWORD -s --insecure -F "file=@$STOCKTRADER_LOCATION/Component/stocktrader-all-in-one.yaml.json;type=application/zip" -F "filename=stocktrader-all-in-one.yaml.json" $DS_WEB_URL/rest/deploy/component/import 1> /dev/null
 
 echo adding component templates to team
 echo
@@ -108,46 +55,45 @@ echo
 $udclient addComponentTemplateToTeam -componentTemplate "Kubernetes Component Template" -team "Container Team" 1> /dev/null
 $udclient addComponentTemplateToTeam -componentTemplate "Docker Template" -team "Container Team" 1> /dev/null
 
-echo creating components
-echo 
-
-$udclient createComponent $STOCKTRADER_LOCATION/Components/stocktrader-all-in-one.yaml.json 1> /dev/null
-$udclient createComponent $STOCKTRADER_LOCATION/Components/StockTrader-loyalty-level.json 1> /dev/null
-$udclient createComponent $STOCKTRADER_LOCATION/Components/StockTrader-portfolio.json 1> /dev/null
-$udclient createComponent $STOCKTRADER_LOCATION/Components/StockTrader-stock-quote.json 1> /dev/null
-$udclient createComponent $STOCKTRADER_LOCATION/Components/StockTrader-notification.json 1> /dev/null
-$udclient createComponent $STOCKTRADER_LOCATION/Components/StockTrader-trader.json 1> /dev/null
-
-echo setting properties on components
-echo 
-
-$udclient setComponentProperty -component StockTrader-loyalty-level -name docker.registry.name -value master.cfc:8500 1>/dev/null
-$udclient setComponentProperty -component StockTrader-portfolio -name docker.registry.name -value master.cfc:8500 1>/dev/null
-$udclient setComponentProperty -component StockTrader-stock-quote -name docker.registry.name -value master.cfc:8500 1>/dev/null
-$udclient setComponentProperty -component StockTrader-notification -name docker.registry.name -value master.cfc:8500 1>/dev/null
-$udclient setComponentProperty -component StockTrader-trader -name docker.registry.name -value master.cfc:8500 1>/dev/null
-
-
-echo creating processes on each component
-echo 
-
-$udclient createComponentProcess $STOCKTRADER_LOCATION/Components/Process+and+Apply+YAML+File.json 1> /dev/null
-
-
 echo creating application
 echo
 
-$udclient createApplication $STOCKTRADER_LOCATION/Applications/StockTrader.json 1> /dev/null
+applicationId=`$udclient createApplication $STOCKTRADER_LOCATION/Applications/StockTrader.json | python -c \
+"import json; import sys;
+data=json.load(sys.stdin); print data['id']"`
 
-echo adding components to application
+echo adding component to application
 echo
 
 $udclient addComponentToApplication -component stocktrader-all-in-one.yaml -application StockTrader 1> /dev/null
-$udclient addComponentToApplication -component StockTrader-loyalty-level -application StockTrader 1> /dev/null
-$udclient addComponentToApplication -component StockTrader-portfolio -application StockTrader 1> /dev/null
-$udclient addComponentToApplication -component StockTrader-stock-quote -application StockTrader 1> /dev/null
-$udclient addComponentToApplication -component StockTrader-notification -application StockTrader 1> /dev/null
-$udclient addComponentToApplication -component StockTrader-trader -application StockTrader 1> /dev/null
 
+echo creating environments
+echo
 
+echo "{
+  \"applicationId\": \"$applicationId\",
+  \"name\": \"LOCAL 1\",
+  \"templateName\": \"LOCAL\"
+}" > $STOCKTRADER_LOCATION/tmp/localenv.json
 
+echo "{
+  \"applicationId\": \"$applicationId\",
+  \"name\": \"QA 1\",
+  \"templateName\": \"QA\"
+}" > $STOCKTRADER_LOCATION/tmp/qaenv.json
+
+echo "{
+  \"applicationId\": \"$applicationId\",
+  \"name\": \"PROD 1\",
+  \"templateName\": \"PROD\"
+}" > $STOCKTRADER_LOCATION/tmp/prodenv.json
+
+$udclient createEnvironmentFromTemplate $STOCKTRADER_LOCATION/tmp/localenv.json 1> /dev/null
+$udclient createEnvironmentFromTemplate $STOCKTRADER_LOCATION/tmp/qaenv.json 1> /dev/null
+$udclient createEnvironmentFromTemplate $STOCKTRADER_LOCATION/tmp/prodenv.json 1> /dev/null
+
+echo removing tmp directory
+echo
+rm -r $STOCKTRADER_LOCATION/tmp
+
+echo stocktrader application loaded successfully
