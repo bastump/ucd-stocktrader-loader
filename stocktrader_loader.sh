@@ -49,6 +49,16 @@ echo
 
 curl -k —verbose -u $DS_USERNAME:$DS_PASSWORD -s --insecure -F "file=@$STOCKTRADER_LOCATION/Component/stocktrader-all-in-one.yaml.json;type=application/zip" -F "filename=stocktrader-all-in-one.yaml.json" $DS_WEB_URL/rest/deploy/component/import 1> /dev/null
 
+echo creating component versions
+echo
+$udclient createVersion -component stocktrader-all-in-one.yaml -name v1 1> /dev/null
+$udclient createVersion -component stocktrader-all-in-one.yaml -name v1-onprem-db 1> /dev/null
+
+echo adding files to versions
+echo
+$udclient addVersionFiles -component stocktrader-all-in-one.yaml -version v1 -base $STOCKTRADER_LOCATION/Component/v1/ 1> /dev/null
+$udclient addVersionFiles -component stocktrader-all-in-one.yaml -version v1-onprem-db -base $STOCKTRADER_LOCATION/Component/v1-onprem-db/ 1> /dev/null
+
 echo adding component templates to team
 echo
 
