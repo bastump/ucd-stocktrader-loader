@@ -225,7 +225,7 @@
             "properties": [
                 {
                     "name": "basePath",
-                    "value": "\/home\/tneal\/git-projects\/StockTrader\/all-in-one-yaml",
+                    "value": "",
                     "description": "",
                     "secure": false
                 },

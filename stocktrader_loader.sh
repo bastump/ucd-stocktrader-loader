@@ -65,6 +65,11 @@ echo
 $udclient addComponentTemplateToTeam -componentTemplate "Kubernetes Component Template" -team "Container Team" 1> /dev/null
 $udclient addComponentTemplateToTeam -componentTemplate "Docker Template" -team "Container Team" 1> /dev/null
 
+echo adding resources to team
+echo
+
+$udclient addResourceToTeam -resource “/StockTrader" -team "Container Team" 1> /dev/null
+
 echo creating application
 echo
 
