@@ -6,6 +6,9 @@ then
 fi
 
 STOCKTRADER_LOCATION=$(dirname "$0")
+DS_USERNAME=admin
+DS_PASSWORD=admin
+DS_WEB_URL=https://localhost:8443
 
 echo loading plugins
 echo
