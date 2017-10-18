@@ -45,7 +45,9 @@ if [ ! -e "$file" ]; then
     echo
 
     #installing mysql connector jar
-    apt-get install default-jre
+    apt-get install default-jre -y
+    apt-get install curl -y
+    apt-get install unzip -y
     apt-get install libmysql-java -y
     cp /usr/share/java/mysql.jar $STOCKTRADER_LOCATION/tmp/ibm-ucd-install/lib/ext/mysql.jar
 
@@ -89,7 +91,7 @@ else
     echo attempting to install python…
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
         echo linux os detected
-        apt-get -y install python unzip curl \
+        apt-get -y install python \
         && apt-get autoclean \
         && apt-get clean \
         && apt-get autoremove
