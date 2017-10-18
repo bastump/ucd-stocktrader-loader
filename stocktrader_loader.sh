@@ -45,10 +45,10 @@ if [ ! -e "$file" ]; then
     echo
 
     #installing mysql connector jar
-    if "$OSTYPE" == "linux-gnu"; then
-        sudo apt-get install libmysql-java -y
-        sudo cp /usr/share/java/mysql.jar $STOCKTRADER_LOCATION/tmp/ibm-ucd-install/lib/ext/mysql.jar
-    elif "$OSTYPE" == "darwin"*; then
+    if [[ “$OSTYPE" == "linux-gnu" ]]; then
+        apt-get install libmysql-java -y
+        cp /usr/share/java/mysql.jar $STOCKTRADER_LOCATION/tmp/ibm-ucd-install/lib/ext/mysql.jar
+    elif [[ “$OSTYPE" == "darwin”* ]]; then
         echo mac os detected
         brew install mysql
     else
@@ -85,13 +85,13 @@ then
     echo
 else
     echo attempting to install python…
-    if "$OSTYPE" == "linux-gnu"; then
+    if [[ “$OSTYPE" == "linux-gnu" ]]; then
         echo linux os detected
         apt-get -y install python unzip curl \
         && apt-get autoclean \
         && apt-get clean \
         && apt-get autoremove
-    elif "$OSTYPE" == "darwin"*; then
+    elif [[ “$OSTYPE" == "darwin"* ]]; then
         echo mac os detected
         brew install python
     else
