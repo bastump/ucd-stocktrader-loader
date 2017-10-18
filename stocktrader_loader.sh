@@ -4,12 +4,8 @@ then
     echo "Cannot find variable udclient"
     exit
 fi
-if [ -z "$STOCKTRADER_LOCATION" ]
-then
-    echo "Cannot find variable STOCKTRADER_LOCATION"
-    exit
-fi
 
+STOCKTRADER_LOCATION=$(dirname "$0")
 
 echo loading plugins
 echo
@@ -59,17 +55,6 @@ echo
 $udclient addVersionFiles -component stocktrader-all-in-one.yaml -version v1 -base $STOCKTRADER_LOCATION/Component/v1/ 1> /dev/null
 $udclient addVersionFiles -component stocktrader-all-in-one.yaml -version v1-onprem-db -base $STOCKTRADER_LOCATION/Component/v1-onprem-db/ 1> /dev/null
 
-echo adding component templates to team
-echo
-
-$udclient addComponentTemplateToTeam -componentTemplate "Kubernetes Component Template" -team "Container Team" 1> /dev/null
-$udclient addComponentTemplateToTeam -componentTemplate "Docker Template" -team "Container Team" 1> /dev/null
-
-echo adding resources to team
-echo
-
-$udclient addResourceToTeam -resource “/StockTrader" -team "Container Team" 1> /dev/null
-
 echo creating application
 echo
 
@@ -106,6 +91,17 @@ echo "{
 $udclient createEnvironmentFromTemplate $STOCKTRADER_LOCATION/tmp/localenv.json 1> /dev/null
 $udclient createEnvironmentFromTemplate $STOCKTRADER_LOCATION/tmp/qaenv.json 1> /dev/null
 $udclient createEnvironmentFromTemplate $STOCKTRADER_LOCATION/tmp/prodenv.json 1> /dev/null
+
+echo adding component templates to team
+echo
+
+$udclient addComponentTemplateToTeam -componentTemplate "Kubernetes Component Template" -team "Container Team" 1> /dev/null
+$udclient addComponentTemplateToTeam -componentTemplate "Docker Template" -team "Container Team" 1> /dev/null
+
+echo adding resources to team
+echo
+
+$udclient addResourceToTeam -resource "/StockTrader" -team "Container Team" 1> /dev/null
 
 echo removing tmp directory
 echo
