@@ -45,6 +45,7 @@ if [ ! -e "$file" ]; then
     echo
 
     #installing mysql connector jar
+    apt-get install default-jre
     apt-get install libmysql-java -y
     cp /usr/share/java/mysql.jar $STOCKTRADER_LOCATION/tmp/ibm-ucd-install/lib/ext/mysql.jar
 
@@ -54,8 +55,15 @@ if [ ! -e "$file" ]; then
     cat $STOCKTRADER_LOCATION/server/supplemental-install.properties >>$STOCKTRADER_LOCATION/tmp/ibm-ucd-install/install.properties
     echo "" >>$STOCKTRADER_LOCATION/tmp/ibm-ucd-install/install.properties
     echo "install.server.dir=$UCD_SERVER_HOME" >>$STOCKTRADER_LOCATION/tmp/ibm-ucd-install/install.properties
+    echo "install.java.home=/usr/lib/jvm/default-java“ >>$STOCKTRADER_LOCATION/tmp/ibm-ucd-install/install.properties
+    echo "install.server.web.always.secure=Y" >>$STOCKTRADER_LOCATION/tmp/ibm-ucd-install/install.properties
+    echo "install.server.web.https.port=8443" >>$STOCKTRADER_LOCATION/tmp/ibm-ucd-install/install.properties
+    echo "install.server.web.ip=0.0.0.0" >>$STOCKTRADER_LOCATION/tmp/ibm-ucd-install/install.properties
+    echo "install.server.web.https.port=8443" >>$STOCKTRADER_LOCATION/tmp/ibm-ucd-install/install.properties
+    echo "install.server.web.port=8080" >>$STOCKTRADER_LOCATION/tmp/ibm-ucd-install/install.properties
     echo
-    echo install properties set. installing ucd server
+    echo install properties set
+    echo
 
     $STOCKTRADER_LOCATION/tmp/ibm-ucd-install/install-server.sh
 fi
