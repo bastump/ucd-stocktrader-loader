@@ -80,6 +80,7 @@ then
     unzip /opt/ibm-ucd/server/opt/tomcat/webapps/ROOT/tools/udclient.zip -d $STOCKTRADER_LOCATION/tmp/
     UD_CLIENT=$STOCKTRADER_LOCATION/tmp/udclient/udclient
     echo UD_CLIENT variable set to $UD_CLIENT
+    echo
 fi
 
 #ensure necessary apps are installed
@@ -88,7 +89,7 @@ then
     echo python detected
     echo
 else
-    echo attempting to install python…
+    echo attempting to install python...
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
         echo linux os detected
         apt-get -y install python \
@@ -102,6 +103,12 @@ else
         echo An error occurred while detecting OS.
     fi
 fi
+
+echo starting ucd server...
+echo
+$UCD_SERVER_HOME/bin/server start
+
+sleep 5
 
 export DS_USERNAME=admin
 export DS_PASSWORD=admin
