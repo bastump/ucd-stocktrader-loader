@@ -131,3 +131,11 @@ echo
 rm -r $STOCKTRADER_LOCATION/tmp
 
 echo stocktrader application loaded successfully
+
+trap : 0
+
+echo >&2 '
+************
+*** DONE ***
+************
+'
