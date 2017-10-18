@@ -25,6 +25,23 @@ then
     exit
 fi
 
+#ensure python is installed
+if which python > /dev/null 2>&1;
+then
+    echo python detected
+else
+    echo attempting to install python…
+    if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        echo linux os detected
+        apt-get -y install python
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        echo mac os detected
+        brew install python
+    else
+        echo An error occurred while detecting OS. Failed to install python.
+    fi
+fi
+
 STOCKTRADER_LOCATION=$(dirname "$0")
 export DS_USERNAME=admin
 export DS_PASSWORD=admin
