@@ -1,7 +1,10 @@
-#ensure udclient and stocktrader_location variables are set
+#exit if errors are encountered
+set -e
+
+#ensure udclient location is set
 if [ -z "$udclient" ]
 then
-    echo "Cannot find variable udclient"
+    echo "Cannot find variable udclient. Please set the location of udclient."
     exit
 fi
 
