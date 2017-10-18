@@ -46,8 +46,8 @@ if [ ! -e "$file" ]; then
 
     #installing mysql connector jar
     if "$OSTYPE" == "linux-gnu"; then
-        apt-get install libmysql-java -y
-        cp /usr/share/java/mysql.jar $STOCKTRADER_LOCATION/tmp/ibm-ucd-install/lib/ext/mysql.jar
+        sudo apt-get install libmysql-java -y
+        sudo cp /usr/share/java/mysql.jar $STOCKTRADER_LOCATION/tmp/ibm-ucd-install/lib/ext/mysql.jar
     elif "$OSTYPE" == "darwin"*; then
         echo mac os detected
         brew install mysql
