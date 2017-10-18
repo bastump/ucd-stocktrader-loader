@@ -1,5 +1,6 @@
 #set the location variable for stocktrader project
 STOCKTRADER_LOCATION=$(dirname "$0")
+UCD_SERVER_HOME=/opt/ibm-ucd/server
 
 #exit if errors are encountered
 
@@ -10,7 +11,7 @@ abort()
 *** ABORTED ***
 ***************
 '
-    echo "An error occurred while loading stocktrader demo. Removing tmp directory and exiting…" >&2
+    echo "An error occurred while loading stocktrader demo. Removing tmp directory and exiting..." >&2
     rm -r $STOCKTRADER_LOCATION/tmp
     exit 1
 }
@@ -19,27 +20,82 @@ trap 'abort' 0
 
 set -e
 
-#ensure udclient location is set
-if [ -z "$udclient" ]
-then
-    echo "Cannot find variable udclient. Please set the location of udclient."
-    exit
+echo creating tmp directory
+echo
+
+mkdir $STOCKTRADER_LOCATION/tmp
+
+echo checking for urbancode deploy
+echo
+
+file="$UCD_SERVER_HOME/bin/server"
+if [ ! -e "$file" ]; then
+    echo "Installing IBM UrbanCode Deploy..."
+    
+    #install urbancode deploy
+    if ls $STOCKTRADER_LOCATION/server/ibm-ucd*.zip 1> /dev/null 2>&1; then
+        echo unzip -q $STOCKTRADER_LOCATION/server/ibm-ucd*.zip -d $STOCKTRADER_LOCATION/tmp
+        unzip -q $STOCKTRADER_LOCATION/server/ibm-ucd*.zip -d $STOCKTRADER_LOCATION/tmp
+    else
+        echo "No install image found. $STOCKTRADER_LOCATION/server/ibm-ucd*.zip"
+        exit 1
+    fi
+
+    echo "configuring mysql"
+    echo
+
+    #installing mysql connector jar
+    if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        apt-get install libmysql-java -y
+        cp /usr/share/java/mysql.jar $STOCKTRADER_LOCATION/tmp/ibm-ucd-install/lib/ext/mysql.jar
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        echo mac os detected
+        brew install mysql
+    else
+        echo An error occurred while detecting OS.
+    fi
+
+    #set install properties and install the server
+    cat $STOCKTRADER_LOCATION/server/supplemental-install-common.properties >>$STOCKTRADER_LOCATION/tmp/ibm-ucd-install/install.properties
+    cat $STOCKTRADER_LOCATION/server/supplemental-install.properties >>$STOCKTRADER_LOCATION/tmp/ibm-ucd-install/install.properties
+    echo "" >>$STOCKTRADER_LOCATION/tmp/ibm-ucd-install/install.properties
+    echo "install.server.dir=$UCD_SERVER_HOME" >>$STOCKTRADER_LOCATION/tmp/ibm-ucd-install/install.properties
+    echo
+    echo install properties set. installing ucd server
+
+    $STOCKTRADER_LOCATION/tmp/ibm-ucd-install/install-server.sh
 fi
 
-#ensure python is installed
+echo "IBM UrbanCode Deploy is installed"
+echo
+
+#ensure udclient location is set
+if [ -z "$UD_CLIENT" ]
+then
+    echo extracting udclient from server
+    unzip /opt/ibm-ucd/server/opt/tomcat/webapps/ROOT/tools/udclient.zip -d $STOCKTRADER_LOCATION/tmp/
+    UD_CLIENT=$STOCKTRADER_LOCATION/tmp/udclient/udclient
+    echo UD_CLIENT variable set to $UD_CLIENT
+fi
+
+#ensure necessary apps are installed
 if which python > /dev/null 2>&1;
 then
     echo python detected
+    echo
 else
     echo attempting to install python…
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
         echo linux os detected
-        apt-get -y install python
+        apt-get -y install python unzip curl \
+        && apt-get autoclean \
+        && apt-get clean \
+        && apt-get autoremove
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         echo mac os detected
         brew install python
     else
-        echo An error occurred while detecting OS. Failed to install python.
+        echo An error occurred while detecting OS.
     fi
 fi
 
@@ -56,10 +112,6 @@ curl -k —verbose -u $DS_USERNAME:$DS_PASSWORD -s --insecure -F "file=@$STOCKTR
 
 echo
 echo
-echo creating tmp directory
-echo
-
-mkdir $STOCKTRADER_LOCATION/tmp
 
 echo downloading templates from github
 echo
@@ -82,25 +134,25 @@ curl -k —verbose -u $DS_USERNAME:$DS_PASSWORD -s --insecure -F "file=@$STOCKTR
 
 echo creating component versions
 echo
-$udclient createVersion -component stocktrader-all-in-one.yaml -name v1 > /dev/null
-$udclient createVersion -component stocktrader-all-in-one.yaml -name v1-onprem-db > /dev/null
+$UD_CLIENT createVersion -component stocktrader-all-in-one.yaml -name v1 > /dev/null
+$UD_CLIENT createVersion -component stocktrader-all-in-one.yaml -name v1-onprem-db > /dev/null
 
 echo adding files to versions
 echo
-$udclient addVersionFiles -component stocktrader-all-in-one.yaml -version v1 -base $STOCKTRADER_LOCATION/Component/v1/ > /dev/null
-$udclient addVersionFiles -component stocktrader-all-in-one.yaml -version v1-onprem-db -base $STOCKTRADER_LOCATION/Component/v1-onprem-db/ > /dev/null
+$UD_CLIENT addVersionFiles -component stocktrader-all-in-one.yaml -version v1 -base $STOCKTRADER_LOCATION/Component/v1/ > /dev/null
+$UD_CLIENT addVersionFiles -component stocktrader-all-in-one.yaml -version v1-onprem-db -base $STOCKTRADER_LOCATION/Component/v1-onprem-db/ > /dev/null
 
 echo creating application
 echo
 
-applicationId=`$udclient createApplication $STOCKTRADER_LOCATION/Applications/StockTrader.json | python -c \
+applicationId=`$UD_CLIENT createApplication $STOCKTRADER_LOCATION/Applications/StockTrader.json | python -c \
 "import json; import sys;
 data=json.load(sys.stdin); print data['id']"`
 
 echo adding component to application
 echo
 
-$udclient addComponentToApplication -component stocktrader-all-in-one.yaml -application StockTrader > /dev/null
+$UD_CLIENT addComponentToApplication -component stocktrader-all-in-one.yaml -application StockTrader > /dev/null
 
 echo creating environments
 echo
@@ -123,13 +175,13 @@ echo "{
   \"templateName\": \"PROD\"
 }" > $STOCKTRADER_LOCATION/tmp/prodenv.json
 
-localenvId=`$udclient createEnvironmentFromTemplate $STOCKTRADER_LOCATION/tmp/localenv.json | python -c \
+localenvId=`$UD_CLIENT createEnvironmentFromTemplate $STOCKTRADER_LOCATION/tmp/localenv.json | python -c \
 "import json; import sys;
 data=json.load(sys.stdin); print data['id']"`
-qaenvId=`$udclient createEnvironmentFromTemplate $STOCKTRADER_LOCATION/tmp/qaenv.json | python -c \
+qaenvId=`$UD_CLIENT createEnvironmentFromTemplate $STOCKTRADER_LOCATION/tmp/qaenv.json | python -c \
 "import json; import sys;
 data=json.load(sys.stdin); print data['id']"`
-prodenvId=`$udclient createEnvironmentFromTemplate $STOCKTRADER_LOCATION/tmp/prodenv.json | python -c \
+prodenvId=`$UD_CLIENT createEnvironmentFromTemplate $STOCKTRADER_LOCATION/tmp/prodenv.json | python -c \
 "import json; import sys;
 data=json.load(sys.stdin); print data['id']"`
 
