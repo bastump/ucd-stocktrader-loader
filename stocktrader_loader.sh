@@ -1,4 +1,21 @@
+STOCKTRADER_LOCATION=$(dirname "$0")
+
 #exit if errors are encountered
+
+abort()
+{
+    echo >&2 '
+***************
+*** ABORTED ***
+***************
+'
+    echo "An error occurred while loading stocktrader demo. Removing tmp directory and exiting…" >&2
+    rm -r $STOCKTRADER_LOCATION/tmp
+    exit 1
+}
+
+trap 'abort' 0
+
 set -e
 
 #ensure udclient location is set
