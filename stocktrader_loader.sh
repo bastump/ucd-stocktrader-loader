@@ -1,3 +1,4 @@
+#set the location variable for stocktrader project
 STOCKTRADER_LOCATION=$(dirname "$0")
 
 #exit if errors are encountered
@@ -42,7 +43,6 @@ else
     fi
 fi
 
-STOCKTRADER_LOCATION=$(dirname "$0")
 export DS_USERNAME=admin
 export DS_PASSWORD=admin
 export DS_WEB_URL=https://localhost:8443
@@ -74,11 +74,6 @@ echo
 
 curl -k —verbose -u $DS_USERNAME:$DS_PASSWORD -s --insecure -F "file=@$STOCKTRADER_LOCATION/tmp/Docker+Template.json;type=application/zip" -F "filename=Docker+Template.json" $DS_WEB_URL/rest/deploy/componentTemplate/import > /dev/null
 curl -k —verbose -u $DS_USERNAME:$DS_PASSWORD -s --insecure -F "file=@$STOCKTRADER_LOCATION/tmp/KubernetesApplicationTemplate.json;type=application/zip" -F "filename=KubernetesApplicationTemplate.json" $DS_WEB_URL/rest/deploy/applicationTemplate/import?resourceTemplateUpgradeType=UPGRADE_IF_EXISTS > /dev/null
-
-echo creating team
-echo
-
-$udclient createTeam -team "Container Team" > /dev/null
 
 echo creating components
 echo 
@@ -128,20 +123,22 @@ echo "{
   \"templateName\": \"PROD\"
 }" > $STOCKTRADER_LOCATION/tmp/prodenv.json
 
-$udclient createEnvironmentFromTemplate $STOCKTRADER_LOCATION/tmp/localenv.json > /dev/null
-$udclient createEnvironmentFromTemplate $STOCKTRADER_LOCATION/tmp/qaenv.json > /dev/null
-$udclient createEnvironmentFromTemplate $STOCKTRADER_LOCATION/tmp/prodenv.json > /dev/null
+localenvId=`$udclient createEnvironmentFromTemplate $STOCKTRADER_LOCATION/tmp/localenv.json | python -c \
+"import json; import sys;
+data=json.load(sys.stdin); print data['id']"`
+qaenvId=`$udclient createEnvironmentFromTemplate $STOCKTRADER_LOCATION/tmp/qaenv.json | python -c \
+"import json; import sys;
+data=json.load(sys.stdin); print data['id']"`
+prodenvId=`$udclient createEnvironmentFromTemplate $STOCKTRADER_LOCATION/tmp/prodenv.json | python -c \
+"import json; import sys;
+data=json.load(sys.stdin); print data['id']"`
 
-echo adding component templates to team
+echo setting environment properties
 echo
 
-$udclient addComponentTemplateToTeam -componentTemplate "Kubernetes Component Template" -team "Container Team" > /dev/null
-$udclient addComponentTemplateToTeam -componentTemplate "Docker Template" -team "Container Team" > /dev/null
-
-echo adding resources to team
-echo
-
-$udclient addResourceToTeam -resource "/StockTrader" -team "Container Team" > /dev/null
+curl -k -X PUT -u $DS_USERNAME:$DS_PASSWORD "$DS_WEB_URL/cli/environment/propValue?environment=$localenvId&name=KUBECTL-OPTS&value=" > /dev/null
+curl -k -X PUT -u $DS_USERNAME:$DS_PASSWORD "$DS_WEB_URL/cli/environment/propValue?environment=$qaenvId&name=KUBECTL-OPTS&value=" > /dev/null
+curl -k -X PUT -u $DS_USERNAME:$DS_PASSWORD "$DS_WEB_URL/cli/environment/propValue?environment=$prodenvId&name=KUBECTL-OPTS&value=" > /dev/null
 
 echo removing tmp directory
 echo
