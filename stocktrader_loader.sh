@@ -61,7 +61,6 @@ if [ ! -e "$file" ]; then
     echo "install.server.web.always.secure=Y" >>$STOCKTRADER_LOCATION/tmp/ibm-ucd-install/install.properties
     echo "install.server.web.https.port=8443" >>$STOCKTRADER_LOCATION/tmp/ibm-ucd-install/install.properties
     echo "install.server.web.ip=0.0.0.0" >>$STOCKTRADER_LOCATION/tmp/ibm-ucd-install/install.properties
-    echo "install.server.web.https.port=8443" >>$STOCKTRADER_LOCATION/tmp/ibm-ucd-install/install.properties
     echo "install.server.web.port=8080" >>$STOCKTRADER_LOCATION/tmp/ibm-ucd-install/install.properties
     echo
     echo install properties set
