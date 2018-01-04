@@ -8,11 +8,11 @@ This project contains a shell script which installs a UCD server and loads it wi
 
 2. Locate and update the server location, credentials, and web url for UCD in the stocktrader_loader.sh script if necessary:
 
-Defaults:
-UCD_SERVER_HOME=/opt/ibm-ucd/server
-DS_USERNAME=admin
-DS_PASSWORD=admin
-DS_WEB_URL=https://localhost:8443
+Defaults:  
+UCD_SERVER_HOME=/opt/ibm-ucd/server  
+DS_USERNAME=admin  
+DS_PASSWORD=admin  
+DS_WEB_URL=https://localhost:8443  
 
 3. Run the script, follow the prompts, noting any errors returned.
 
