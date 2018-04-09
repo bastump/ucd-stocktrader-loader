@@ -1,3 +1,4 @@
+#!/bin/bash
 #set the location variable for stocktrader project
 STOCKTRADER_LOCATION=$(dirname "$0")
 UCD_SERVER_HOME=/opt/ibm-ucd/server
@@ -45,11 +46,24 @@ if [ ! -e "$file" ]; then
     echo
 
     #installing mysql connector jar
-    apt-get install default-jre -y
-    apt-get install curl -y
-    apt-get install unzip -y
-    apt-get install libmysql-java -y
-    cp /usr/share/java/mysql.jar $STOCKTRADER_LOCATION/tmp/ibm-ucd-install/lib/ext/mysql.jar
+    echo attempting to install python...
+    if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        echo linux os detected
+        apt-get install default-jre -y
+        apt-get install curl -y
+        apt-get install unzip -y
+        apt-get install libmysql-java -y
+        cp /usr/share/java/mysql.jar $STOCKTRADER_LOCATION/tmp/ibm-ucd-install/lib/ext/mysql.jar
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        echo mac os detected
+        brew install wget
+        wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.46.zip -P $STOCKTRADER_LOCATION/tmp
+        unzip -q $STOCKTRADER_LOCATION/tmp/mysql-connector-java-5.1.46.zip -d $STOCKTRADER_LOCATION/tmp
+        cp $STOCKTRADER_LOCATION/tmp/mysql-connector-java-5.1.46/mysql-connector-java-5.1.46.jar $STOCKTRADER_LOCATION/tmp/ibm-ucd-install/lib/ext/mysql.jar
+    else
+        echo An error occurred while detecting OS.
+    fi
+
 
 
     #set install properties and install the server
