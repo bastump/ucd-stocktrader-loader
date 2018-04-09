@@ -46,7 +46,7 @@ if [ ! -e "$file" ]; then
     echo
 
     #installing mysql connector jar
-    echo attempting to install python...
+    echo attempting to install mysql...
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
         echo linux os detected
         apt-get install default-jre -y
